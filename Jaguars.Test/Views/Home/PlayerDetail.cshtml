@@ -1,0 +1,243 @@
+﻿@model PlayerModel
+@{
+    ViewData["Title"] = @Model.FullNameFormal;
+}
+
+<script>
+    $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
+<!-- Player Details Card Start -->
+<div class="card m-auto">
+    <div class="card-header bg-light bg-gradient">
+        <div class="row">
+            <!-- Basic Player Info -->
+            <div class="col col-auto">
+						@if(Model.HeadshotUrl != null)
+						{
+							<img src="@Model.HeadshotUrl" style="width:150px;"/>
+						}
+						else
+						{
+							<img src="~/images/default.png" style="width:150px;"/>
+						}
+            </div>
+            <div class="col col-auto">
+                <div class="row">
+                    <h1>@ViewData["Title"]</h1>
+                </div>
+                <div class="row">
+                    <img src="/Images/Logos/NFL/@(Model.ClubId).svg" style="width:75px;"/>
+                    @Model.ClubName | #@Model.Jersey <br />
+                    @(Model.PositionTypeAbbrev) (@(Model.PositionAbbrev.ToString()))
+                </div>
+            </div>
+            <!-- Injury and Play Status -->
+            <div class="col">
+                            @if(Model.Inactive)
+                            {
+                                <div class="badge bg-warning mt-2">Inactive</div>
+                            }
+                            else
+                            {
+                                <div class="badge bg-success mt-2">Active</div>
+                            }
+                            <br />
+                            @if(Model.Injured)
+                            {
+                                <div class="badge bg-danger mt-1">Injured</div>
+                            }
+                            else
+                            {
+                                <div class="badge bg-success mt-1">Healthy</div>
+                            }
+            </div>
+        </div>
+        <div>
+
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Tab Navigation Headers -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">Overview</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab" aria-controls="stats" aria-selected="false">Stats</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="combine-tab" data-bs-toggle="tab" data-bs-target="#combine" type="button" role="tab" aria-controls="combine" aria-selected="false">Combine</button>
+          </li>
+        </ul>
+
+        <!-- Overview Tab Section -->
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+              <table class="table table-borderless table-responsive-sm">
+                      <tr>
+                          <th>Age</th>
+                          <th>Height</th>
+                          <th>Weight</th>
+                          <th>Arm Length</th>
+                          <th>Hand Size</th>
+                      </tr>
+
+                      <tr>
+                          <td>
+                                @if(Model.DOB != null)
+                                {
+                                    @(((DateTime.Now - Model.DOB) / 365.25).ToString().Substring(0,2))
+                                }
+                          </td>
+                          		@if(Model.Height != null)
+					            {
+						            <td>@Model.Height.Value.ToString().Substring(0,1) ' @Model.Height.Value.ToString().Substring(1,2) "</td>
+					            }
+                          <td>@Model.Weight</td>
+                          <td>@Model.Arms</td>
+                          <td>@Model.Hands</td>
+                      </tr>
+
+                      <tr>
+                          <th>College</th>
+                          <th>Experience</th>
+                          <th>Games Played</th>
+                          <th>Arrests</th>
+                          <th></th>
+                      </tr>
+                      <tr>
+                          <td>@Model.SchoolCode</td>
+                          <td>
+                            @if((DateTime.Now.Year - Model.YearDraft) != 0)
+                            {
+                                <div>@((DateTime.Now.Year - Model.YearDraft)) year(s)</div>
+                            }
+                            else
+                            {
+                                <div>Rookie</div>
+                            }
+                          </td>
+                          <td>@Model.GamesPlayed</td>
+
+                          <td>
+                            @if(Model.ClubName == "Las Vegas Raiders")
+                            {
+                                @(Model.Arrests + 10)
+                            }
+                            else
+                            {
+                                @Model.Arrests
+                            }
+                          </td>
+
+                      </tr>
+
+              </table>
+
+          </div>
+
+          <!-- Stats Tab Section -->
+          <div class="tab-pane fade" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+              <h3>Player Attributes</h3>
+              <table class="table table-bordered mt-2">
+                  <thead>
+                      <tr>
+                          <th class="" data-toggle="tooltip" data-placement="top" title="Overall Grade">OVR</th>
+                          <th class="" data-toggle="tooltip" data-placement="top" title="Speed">SPD</th>
+                          <th class="" data-toggle="tooltip" data-placement="top" title="Acceleration">ACC</th>
+                          <th class="" data-toggle="tooltip" data-placement="top" title="Strength">STR</th>
+                          <th class="" data-toggle="tooltip" data-placement="top" title="Agility">AGI</th>
+                          <th class="" data-toggle="tooltip" data-placement="top" title="Awareness">AWR</th>
+                          <th class="" data-toggle="tooltip" data-placement="top" title="Stamina">STA</th>
+                          <th class="" data-toggle="tooltip" data-placement="top" title="Injury Rating">INJ</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>@(Model.LatestGrade / 100.00)</td>
+                          <td>@(Model.SPD / 100.00)</td>
+                          <td>@(Model.ACC / 100.00)</td>
+                          <td>@(Model.STR / 100.00)</td>
+                          <td>@(Model.AGI / 100.00)</td>
+                          <td>@(Model.AWR / 100.00)</td>
+                          <td>@(Model.STA / 100.00)</td>
+                          <td>@(Model.INJ / 100.00)</td>
+                      </tr>
+                  </tbody>
+              </table>
+
+              <h3>Advanced Stats</h3>
+              <table class="table table-bordered">
+                  <thead>
+                      <tr>
+                          <th>Total Fortnite Wins</th>
+                          <th>Solo Wins</th>
+                          <th>Duo Wins</th>
+                          <th>Trio Wins</th>
+                          <th>Squad Wins</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>@(Model.FortniteSoloWins + Model.FortniteDuoWins + Model.FortniteTrioWins + Model.FortniteSquadsWins)</td>
+                          <td>@Model.FortniteSoloWins</td>
+                          <td>@Model.FortniteDuoWins</td>
+                          <td>@Model.FortniteTrioWins</td>
+                          <td>@Model.FortniteSquadsWins</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+
+          <!-- Combine Stats Tab Section -->
+          <div class="tab-pane fade" id="combine" role="tabpanel" aria-labelledby="combine-tab">
+              <div class="card-group mt-2">
+                  <div class="card">
+                      <div class="card-header text-center bg-white">40 Yard Dash</div>
+                      <div class="card-body text-center fw-bolder fs-3">@Model.Speed</div>
+                  </div>
+
+                  <div class="card">
+                      <div class="card-header text-center bg-white">Bench Press</div>
+                      <div class="card-body text-center fw-bolder fs-3">@Model.BenchPress</div>
+                  </div>
+
+                  <div class="card">
+                      <div class="card-header text-center bg-white">Vertical Jump</div>
+                      <div class="card-body text-center fw-bolder fs-3">@Model.VertJump</div>
+                  </div>
+
+                  <div class="card">
+                      <div class="card-header text-center bg-white">Broad Jump</div>
+                      <div class="card-body text-center fw-bolder fs-3">@Model.BroadJump</div>
+                  </div>
+
+                  <div class="card">
+                      <div class="card-header text-center bg-white">3 Cone Drill</div>
+                      <div class="card-body text-center fw-bolder fs-3">@Model.ThreeCone.Value.ToString("N2")</div>
+                  </div>
+
+                  <div class="card">
+                      <div class="card-header text-center bg-white">20 Yd Shuttle</div>
+                      <div class="card-body text-center fw-bolder fs-3">@Model.TwentyShuttle.Value.ToString("N2")</div>
+                  </div>
+
+                  <div class="card">
+                      <div class="card-header text-center bg-white">60 Yd Shuttle</div>
+                      <div class="card-body text-center fw-bolder fs-3">@Model.SixtyShuttle.Value.ToString("N2")</div>
+                  </div>
+              </div>
+          </div>
+
+        </div>
+    </div>
+</div>
+<!-- Player Detail Card Ends -->
+
+<a class="btn btn-primary mt-2" href="javascript:history.go(-1)">Back</a>
+
+
+
